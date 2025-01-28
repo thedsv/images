@@ -31,7 +31,7 @@ func (c *ChromiumGost) Build() error {
 
 	pkgTagVersion := extractVersion(pkgVersion)
 
-	chromeDriverVersions, err := fetchChromeDriverVersions()
+	chromeDriverVersions, err := fetchChromiumGostDriverVersions()
 	if err != nil {
 		return fmt.Errorf("fetch chromedriver versions: %v", err)
 	}
@@ -223,14 +223,14 @@ func (c *ChromiumGost) getLatestChromeDriver(baseUrl string, pkgVersion string) 
 	}
 }
 
-func fetchChromeDriverVersions() (map[string]string, error) {
+func fetchChromiumGostDriverVersions() (map[string]string, error) {
 	const versionsURL = "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
 	resp, err := http.Get(versionsURL)
 	if err != nil {
 		return nil, fmt.Errorf("fetch chrome versions: %v", err)
 	}
 	defer resp.Body.Close()
-	var cv ChromeVersions
+	var cv ChromiumGostVersions
 	err = json.NewDecoder(resp.Body).Decode(&cv)
 	if err != nil {
 		return nil, fmt.Errorf("decode json: %v", err)
@@ -252,11 +252,11 @@ func fetchChromeDriverVersions() (map[string]string, error) {
 	return ret, nil
 }
 
-type ChromeVersions struct {
-	Versions []ChromeVersion `json:"versions"`
+type ChromiumGostVersions struct {
+	Versions []ChromiumGostVersion `json:"versions"`
 }
 
-type ChromeVersion struct {
+type ChromiumGostVersion struct {
 	Version   string                      `json:"version"`
 	Downloads map[string][]ChromeDownload `json:"downloads"`
 }

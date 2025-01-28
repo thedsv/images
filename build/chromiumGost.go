@@ -258,10 +258,10 @@ type ChromiumGostVersions struct {
 
 type ChromiumGostVersion struct {
 	Version   string                      `json:"version"`
-	Downloads map[string][]ChromeDownload `json:"downloads"`
+	Downloads map[string][]ChromiumGostDownload `json:"downloads"`
 }
 
-type ChromeDownload struct {
+type ChromiumGostDownload struct {
 	Platform string `json:"platform"`
 	URL      string `json:"url"`
 }

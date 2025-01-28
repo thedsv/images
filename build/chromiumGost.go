@@ -47,10 +47,10 @@ func (c *ChromiumGost) Build() error {
 		return fmt.Errorf("create dev temporary dir: %v", err)
 	}
 
-	srcDir := "chrome/apt"
+	srcDir := "chromiumGost/apt"
 
 	if pkgSrcPath != "" {
-		srcDir = "chrome/local"
+		srcDir = "chromiumGost/local"
 		pkgDestDir := filepath.Join(devDestDir, srcDir)
 		err := os.MkdirAll(pkgDestDir, 0755)
 		if err != nil {

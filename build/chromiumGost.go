@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	chromeDriverBinary    = "chromedriver"
-	newChromeDriverBinary = "chromedriver-linux64/chromedriver"
+	chromiumGostDriverBinary    = "chromedriver"
+	newChromiumGostDriverBinary = "chromedriver-linux64/chromedriver"
 )
 
 type ChromiumGost struct {
@@ -167,17 +167,17 @@ func (c *ChromiumGost) parseChromeDriverVersion(pkgVersion string, chromeDriverV
 
 func (c *ChromiumGost) downloadChromeDriver(dir string, version string, chromeDriverVersions map[string]string) error {
 	u := fmt.Sprintf("https://chromedriver.storage.googleapis.com/%s/chromedriver_linux64.zip", version)
-	fn := chromeDriverBinary
+	fn := chromiumGostDriverBinary
 	if cdu, ok := chromeDriverVersions[version]; ok {
 		u = cdu
-		fn = newChromeDriverBinary
+		fn = newChromiumGostDriverBinary
 	}
 	outputPath, err := downloadDriver(u, fn, dir)
 	if err != nil {
 		return fmt.Errorf("download chromedriver: %v", err)
 	}
-	if fn == newChromeDriverBinary {
-		err = os.Rename(outputPath, filepath.Join(dir, chromeDriverBinary))
+	if fn == newChromiumGostDriverBinary {
+		err = os.Rename(outputPath, filepath.Join(dir, chromiumGostDriverBinary))
 		if err != nil {
 			return fmt.Errorf("rename chromedriver: %v", err)
 		}

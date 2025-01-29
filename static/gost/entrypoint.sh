@@ -25,9 +25,9 @@ clean() {
   if [ -n "$X11VNC_PID" ]; then
     kill -TERM "$X11VNC_PID"
   fi
-  if [ -n "$DEVTOOLS_PID" ]; then
-    kill -TERM "$DEVTOOLS_PID"
-  fi
+#  if [ -n "$DEVTOOLS_PID" ]; then
+#    kill -TERM "$DEVTOOLS_PID"
+#  fi
   if [ -n "$PULSE_PID" ]; then
     kill -TERM "$PULSE_PID"
   fi
@@ -52,24 +52,24 @@ if env | grep -q ROOT_CA_; then
   done
 fi
 
-if env | grep -q CH_POLICY_; then
-  for p in $(env | grep CH_POLICY_ | sed 's/CH_POLICY_//'); do
-    jsonkey=$(echo $p | sed 's/=.*//')
-    jsonvalue=$(echo $p | sed 's/^.*=//')
-    cat <<< $(jq --arg key $jsonkey --argjson value $jsonvalue '.[$key] = $value' /etc/opt/chrome/policies/managed/policies.json) > /etc/opt/chrome/policies/managed/policies.json
-  done
-fi
+#if env | grep -q CH_POLICY_; then
+#  for p in $(env | grep CH_POLICY_ | sed 's/CH_POLICY_//'); do
+#    jsonkey=$(echo $p | sed 's/=.*//')
+#    jsonvalue=$(echo $p | sed 's/^.*=//')
+#    cat <<< $(jq --arg key $jsonkey --argjson value $jsonvalue '.[$key] = $value' /etc/opt/chrome/policies/managed/policies.json) > /etc/opt/chrome/policies/managed/policies.json
+#  done
+#fi
 
 /usr/bin/fileserver &
 FILESERVER_PID=$!
 
-/usr/bin/devtools &
-DEVTOOLS_PID=$!
+#/usr/bin/devtools &
+#DEVTOOLS_PID=$!
 
 DISPLAY="$DISPLAY" /usr/bin/xseld &
 XSELD_PID=$!
 
-while ip addr | grep inet | grep -q tentative > /dev/null; do sleep 0.1; done
+#while ip addr | grep inet | grep -q tentative > /dev/null; do sleep 0.1; done
 
 mkdir -p ~/.config/pulse
 echo -n 'gIvST5iz2S0J1+JlXC1lD3HWvg61vDTV1xbmiGxZnjB6E3psXsjWUVQS4SRrch6rygQgtpw7qmghDFTaekt8qWiCjGvB0LNzQbvhfs1SFYDMakmIXuoqYoWFqTJ+GOXYByxpgCMylMKwpOoANEDePUCj36nwGaJNTNSjL8WBv+Bf3rJXqWnJ/43a0hUhmBBt28Dhiz6Yqowa83Y4iDRNJbxih6rB1vRNDKqRr/J9XJV+dOlM0dI+K6Vf5Ag+2LGZ3rc5sPVqgHgKK0mcNcsn+yCmO+XLQHD1K+QgL8RITs7nNeF1ikYPVgEYnc0CGzHTMvFR7JLgwL2gTXulCdwPbg=='| base64 -d>~/.config/pulse/cookie

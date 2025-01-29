@@ -6,7 +6,7 @@ import (
 )
 
 var (
-	chromiumGostCmd = &cobra.Command{
+	gostCmd = &cobra.Command{
 		Use:   "chromium-gost",
 		Short: "build Chromium-gost image",
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -21,8 +21,8 @@ var (
 				Tags:           tags,
 				PushImage:      push,
 			}
-			chromiumGost := &build.ChromiumGost{req}
-			return chromiumGost.Build()
+			gost := &build.Gost{req}
+			return gost.Build()
 		},
 	}
 )

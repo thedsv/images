@@ -7,7 +7,7 @@ import (
 
 var (
 	gostCmd = &cobra.Command{
-		Use:   "chromium-gost",
+		Use:   "gost",
 		Short: "build Chromium-gost image",
 		RunE: func(cmd *cobra.Command, args []string) error {
 			req := build.Requirements{

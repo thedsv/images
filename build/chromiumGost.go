@@ -14,15 +14,15 @@ import (
 )
 
 const (
-	chromiumGostDriverBinary    = "chromedriver"
-	newChromiumGostDriverBinary = "chromedriver-linux64/chromedriver"
+	gostDriverBinary    = "chromedriver"
+	newGostDriverBinary = "chromedriver-linux64/chromedriver"
 )
 
-type ChromiumGost struct {
+type Gost struct {
 	Requirements
 }
 
-func (c *ChromiumGost) Build() error {
+func (c *Gost) Build() error {
 
 	pkgSrcPath, pkgVersion, err := c.BrowserSource.Prepare()
 	if err != nil {
@@ -31,7 +31,7 @@ func (c *ChromiumGost) Build() error {
 
 	pkgTagVersion := extractVersion(pkgVersion)
 
-	chromeDriverVersions, err := fetchChromiumGostDriverVersions()
+	chromeDriverVersions, err := fetchGostDriverVersions()
 	if err != nil {
 		return fmt.Errorf("fetch chromedriver versions: %v", err)
 	}
@@ -47,10 +47,10 @@ func (c *ChromiumGost) Build() error {
 		return fmt.Errorf("create dev temporary dir: %v", err)
 	}
 
-	srcDir := "chromiumGost/apt"
+	srcDir := "gost/apt"
 
 	if pkgSrcPath != "" {
-		srcDir = "chromiumGost/local"
+		srcDir = "gost/local"
 		pkgDestDir := filepath.Join(devDestDir, srcDir)
 		err := os.MkdirAll(pkgDestDir, 0755)
 		if err != nil {
@@ -63,7 +63,7 @@ func (c *ChromiumGost) Build() error {
 		}
 	}
 
-	devImageTag := fmt.Sprintf("selenoid/dev_chrome:%s", pkgTagVersion)
+	devImageTag := fmt.Sprintf("selenoid/dev_gost:%s", pkgTagVersion)
 	devImageRequirements := Requirements{NoCache: c.NoCache, Tags: []string{devImageTag}}
 	devImage, err := NewImage(srcDir, devDestDir, devImageRequirements)
 	if err != nil {
@@ -87,7 +87,7 @@ func (c *ChromiumGost) Build() error {
 		return fmt.Errorf("create temporary dir: %v", err)
 	}
 
-	image, err := NewImage("chrome", destDir, c.Requirements)
+	image, err := NewImage("gost", destDir, c.Requirements)
 	if err != nil {
 		return fmt.Errorf("init image: %v", err)
 	}
@@ -104,7 +104,7 @@ func (c *ChromiumGost) Build() error {
 		return fmt.Errorf("build image: %v", err)
 	}
 
-	err = image.Test(c.TestsDir, "chrome", pkgTagVersion)
+	err = image.Test(c.TestsDir, "gost", pkgTagVersion)
 	if err != nil {
 		return fmt.Errorf("test image: %v", err)
 	}
@@ -117,7 +117,7 @@ func (c *ChromiumGost) Build() error {
 	return nil
 }
 
-func (c *ChromiumGost) channelToBuildArgs() []string {
+func (c *Gost) channelToBuildArgs() []string {
 	switch c.BrowserChannel {
 	case "beta":
 		return []string{"PACKAGE=google-chrome-beta", "INSTALL_DIR=chrome-beta"}
@@ -128,7 +128,7 @@ func (c *ChromiumGost) channelToBuildArgs() []string {
 	}
 }
 
-func (c *ChromiumGost) parseChromeDriverVersion(pkgVersion string, chromeDriverVersions map[string]string) (string, error) {
+func (c *Gost) parseChromeDriverVersion(pkgVersion string, chromeDriverVersions map[string]string) (string, error) {
 	version := c.DriverVersion
 	if version == LatestVersion {
 
@@ -165,19 +165,19 @@ func (c *ChromiumGost) parseChromeDriverVersion(pkgVersion string, chromeDriverV
 	return version, nil
 }
 
-func (c *ChromiumGost) downloadChromeDriver(dir string, version string, chromeDriverVersions map[string]string) error {
+func (c *Gost) downloadChromeDriver(dir string, version string, chromeDriverVersions map[string]string) error {
 	u := fmt.Sprintf("https://chromedriver.storage.googleapis.com/%s/chromedriver_linux64.zip", version)
-	fn := chromiumGostDriverBinary
+	fn := gostDriverBinary
 	if cdu, ok := chromeDriverVersions[version]; ok {
 		u = cdu
-		fn = newChromiumGostDriverBinary
+		fn = newGostDriverBinary
 	}
 	outputPath, err := downloadDriver(u, fn, dir)
 	if err != nil {
 		return fmt.Errorf("download chromedriver: %v", err)
 	}
-	if fn == newChromiumGostDriverBinary {
-		err = os.Rename(outputPath, filepath.Join(dir, chromiumGostDriverBinary))
+	if fn == newGostDriverBinary {
+		err = os.Rename(outputPath, filepath.Join(dir, gostDriverBinary))
 		if err != nil {
 			return fmt.Errorf("rename chromedriver: %v", err)
 		}
@@ -185,7 +185,7 @@ func (c *ChromiumGost) downloadChromeDriver(dir string, version string, chromeDr
 	return nil
 }
 
-func (c *ChromiumGost) getLatestChromeDriver(baseUrl string, pkgVersion string) (string, error) {
+func (c *Gost) getLatestChromeDriver(baseUrl string, pkgVersion string) (string, error) {
 	fetchVersion := func(url string) (string, error) {
 		data, err := sendGet(url)
 		if err != nil {
@@ -223,14 +223,14 @@ func (c *ChromiumGost) getLatestChromeDriver(baseUrl string, pkgVersion string) 
 	}
 }
 
-func fetchChromiumGostDriverVersions() (map[string]string, error) {
+func fetchGostDriverVersions() (map[string]string, error) {
 	const versionsURL = "https://googlechromelabs.github.io/chrome-for-testing/known-good-versions-with-downloads.json"
 	resp, err := http.Get(versionsURL)
 	if err != nil {
 		return nil, fmt.Errorf("fetch chrome versions: %v", err)
 	}
 	defer resp.Body.Close()
-	var cv ChromiumGostVersions
+	var cv GostVersions
 	err = json.NewDecoder(resp.Body).Decode(&cv)
 	if err != nil {
 		return nil, fmt.Errorf("decode json: %v", err)
@@ -252,16 +252,16 @@ func fetchChromiumGostDriverVersions() (map[string]string, error) {
 	return ret, nil
 }
 
-type ChromiumGostVersions struct {
-	Versions []ChromiumGostVersion `json:"versions"`
+type GostVersions struct {
+	Versions []GostVersion `json:"versions"`
 }
 
-type ChromiumGostVersion struct {
+type GostVersion struct {
 	Version   string                      `json:"version"`
-	Downloads map[string][]ChromiumGostDownload `json:"downloads"`
+	Downloads map[string][]GostDownload `json:"downloads"`
 }
 
-type ChromiumGostDownload struct {
+type GostDownload struct {
 	Platform string `json:"platform"`
 	URL      string `json:"url"`
 }

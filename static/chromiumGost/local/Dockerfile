@@ -57,8 +57,8 @@ RUN \
          apt-get -y purge curl && \
          dpkg -i chromium-gost.deb && \
          ( \
-          sed -i -e 's@exec -a "$0" "$HERE/chrome"@& --no-sandbox --disable-gpu@' /opt/$INSTALL_DIR/$PACKAGE || \
-          sed -i -e 's@exec -a "$0" "$HERE/chrome"@& --no-sandbox --disable-gpu@' /opt/$INSTALL_DIR/chromium-gost \
+          sed -i -e 's@exec -a "$0" "$HERE/chromium-gost"@& --no-sandbox --disable-gpu@' /opt/$INSTALL_DIR/$PACKAGE || \
+          sed -i -e 's@exec -a "$0" "$HERE/chromium-gost"@& --no-sandbox --disable-gpu@' /opt/$INSTALL_DIR/chromium-gost \
          ) && \
          rm chromium-gost.deb && \
          chown root:root /opt/$INSTALL_DIR/chrome-sandbox && \

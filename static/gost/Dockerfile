@@ -11,6 +11,9 @@ ARG VERSION
 #    GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" && \
 #    upx /devtools/devtools
 
+FROM selenoid/gost:$VERSION
+COPY chromium-gost /usr/bin/chrome
+
 FROM selenoid/dev_gost:$VERSION
 
 ENV DBUS_SESSION_BUS_ADDRESS=/dev/null

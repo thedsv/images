@@ -13,7 +13,7 @@ ARG VERSION
 
 FROM selenoid/gost:$VERSION
 #USER root
-COPY chromium-gost /usr/bin/chrome
+COPY /usr/bin/chromium-gost /usr/bin/chrome
 RUN chmod +x /usr/bin/chrome
 
 FROM selenoid/dev_gost:$VERSION

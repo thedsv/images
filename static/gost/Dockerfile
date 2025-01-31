@@ -11,10 +11,6 @@ ARG VERSION
 #    GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" && \
 #    upx /devtools/devtools
 
-FROM selenoid/gost:$VERSION
-#USER root
-COPY /usr/bin/chromium-gost /usr/bin/chrome
-RUN chmod +x /usr/bin/chrome
 
 FROM selenoid/dev_gost:$VERSION
 
@@ -28,6 +24,9 @@ RUN \
     chmod +x /usr/bin/chromedriver && \
 #    chown -R selenium:nogroup /etc/opt/chrome/policies/managed/ && \
     echo "cookie-file = ~/.config/pulse/cookie" >> /etc/pulse/client.conf
+
+COPY /usr/bin/chromium-gost /usr/bin/chrome
+RUN chmod +x /usr/bin/chrome
 
 USER selenium
 

@@ -12,7 +12,9 @@ ARG VERSION
 #    upx /devtools/devtools
 
 FROM selenoid/gost:$VERSION
+#USER root
 COPY chromium-gost /usr/bin/chrome
+RUN chmod +x /usr/bin/chrome
 
 FROM selenoid/dev_gost:$VERSION
 
